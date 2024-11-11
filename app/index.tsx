@@ -9,7 +9,9 @@ export default function Index() {
   return (
     // SafeAreaView ka ios pal effect phit tal
     // so android so padding top loh phox style write lite tr
-    <SafeAreaView style={{paddingTop: Platform.OS === "android" ? 24 : 0}}>
+    <SafeAreaView 
+    className=' bg-white'
+    style={{paddingTop: Platform.OS === "android" ? 24 : 0}}>
         <ImageBackground 
         source={require('../assets/bg.jpg')}
         className='w-full h-full'
