@@ -1,7 +1,13 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
+import { Weather } from '../../app'
 
-const Content = () => {
+type ContentProps = {
+  weatherInfo : Weather
+}
+
+
+const Content = ({weatherInfo}:ContentProps) => {
   return (
     <View className=' items-center justify-center mb-6'>
       <Image 
@@ -10,7 +16,7 @@ const Content = () => {
       />
       <View className=' relative'>
         <Text className=' text-9xl font-extrabold text-center'>
-        26
+        {weatherInfo.current_weather.temperature.toFixed()}
         </Text>
         <Text className=' text-8xl absolute bottom-20 left-44'>°</Text>
         <Text className=' text-4xl font-medium text-secondaryDark'>

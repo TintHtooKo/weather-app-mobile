@@ -43,15 +43,18 @@ const DummyWeathers : Weather[] = [
         day : 'Sun',
         weather : 'Cloudy',
         temp : '26°'
-    }
+    },
+
 ]
 const WList = () => {
     const [forecastData,setForecastData] = useState(DummyWeathers)
   return (
-    <FlatList 
-    data={forecastData}
-    renderItem={({item})=><WeatherItem w={item}/>} 
-    keyExtractor={(item)=>item.day}/>
+    <View className='flex-1'>
+        <FlatList 
+        data={forecastData}
+        renderItem={({item})=><WeatherItem w={item}/>} 
+        keyExtractor={(item)=>item.day}/>
+    </View>
   )
 }
 
