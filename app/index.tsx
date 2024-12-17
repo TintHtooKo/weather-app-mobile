@@ -52,7 +52,7 @@ export default function Index() {
       const response = await fetch(weather_api)
       const res_data = await response.json()
       setWeatherInfo(res_data)
-      // console.log(res_data)
+      console.log(res_data)
     }
 
     const getReverseGeocode = async()=>{
@@ -87,7 +87,9 @@ export default function Index() {
             {
               weatherInfo && <Content weatherInfo={weatherInfo} />
             }
-            <Info/>
+            {
+              weatherInfo && <Info weatherInfo={weatherInfo}/>
+            }
             <Text className=' text-center text-secondaryDark text-sm my-10'>
               Weather App - THK
             </Text>
