@@ -30,6 +30,11 @@ export const getWeatherInfoByCode = (code:number) =>{
     return WEATHER_COLLECTION.find(weather=>weather.codes?.includes(code))
 }
 
-export const getTimeOnly = (date:string) =>{
-    return date.split("T")[1]
-}
+export const getTimeOnly = (date: string | undefined): string => {
+    if (!date) return 'Invalid date'; // Handle undefined input
+    const parts = date.split('T');
+    return parts[1] || 'Invalid format'; // Handle formatting issues
+  };
+
+export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  

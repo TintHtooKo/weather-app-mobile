@@ -2,22 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { Image, Text, View } from 'react-native'
 import { Weather } from '../../app'
 import { getWeatherInfoByCode } from '../../utils'
+import { useWeatherStore } from '../../store/weather-store'
 
-type ContentProps = {
-  weatherInfo : Weather
-}
-
-type WeatherDetail = {
+export type WeatherDetail = {
   codes : number[],
   label : string,
   image : string
 }
 
-const Content = ({weatherInfo}:ContentProps) => {
+const Content = () => {
+  const current_weather = useWeatherStore(state=>state.current_weather)
   const [weatherDetails,setWeatherDetails] = useState<WeatherDetail>()
   useEffect(()=>{
-    setWeatherDetails(getWeatherInfoByCode(weatherInfo.current_weather.weathercode))
-  },[weatherInfo])
+    setWeatherDetails(getWeatherInfoByCode(current_weather.weathercode))
+  },[weatherDetails])
   return (
     <View className=' items-center justify-center mb-6'>
       <Image 
@@ -26,7 +24,7 @@ const Content = ({weatherInfo}:ContentProps) => {
       />
       <View className=' relative'>
         <Text className=' text-9xl font-extrabold text-center'>
-        {weatherInfo.current_weather.temperature.toFixed()}
+        {current_weather.temperature.toFixed()}
         </Text>
         <Text className=' text-8xl absolute bottom-20 left-44'>°</Text>
         <Text className=' text-4xl font-medium text-secondaryDark'>

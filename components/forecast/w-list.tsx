@@ -1,59 +1,38 @@
 import React, { useState } from 'react'
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, ImageSourcePropType, Text, View } from 'react-native'
 import WeatherItem from './w-item'
+import { useWeatherStore } from '../../store/weather-store'
+import { DAYS, getWeatherInfoByCode } from '../../utils'
 
 
 export type Weather = {
     day : string,
     weather : string,
-    temp : string
+    temp : number,
+    wImage : ImageSourcePropType
 }
-const DummyWeathers : Weather[] = [
-    {
-        day : 'Mon',
-        weather : 'Cloudy',
-        temp : '26°'
-    },
-    {
-        day : 'Tue',
-        weather : 'Sunny',
-        temp : '26°'
-    },
-    {
-        day : 'Wed',
-        weather : 'Sunny',
-        temp : '26°'
-    },
-    {
-        day : 'Thu',
-        weather : 'Cloudy',
-        temp : '26°'
-    },
-    {
-        day : 'Fri',
-        weather : 'Cloudy',
-        temp : '26°'
-    },
-    {
-        day : 'Sat',
-        weather : 'Rainy',
-        temp : '26°'
-    },
-    {
-        day : 'Sun',
-        weather : 'Cloudy',
-        temp : '26°'
-    },
 
-]
 const WList = () => {
-    const [forecastData,setForecastData] = useState(DummyWeathers)
+    const dailyForecast = useWeatherStore(state=>state.daily)
   return (
     <View className='flex-1'>
-        <FlatList 
-        data={forecastData}
-        renderItem={({item})=><WeatherItem w={item}/>} 
-        keyExtractor={(item)=>item.day}/>
+        {
+            dailyForecast.weathercode.map((code,index)=>{
+                const temperature = dailyForecast.temperature_2m_max[index];
+                const date = new Date(dailyForecast.time[index])
+                const dayOfWeek = DAYS[date.getDay()]
+                const condition = getWeatherInfoByCode(code)?.label
+                const img = getWeatherInfoByCode(code)?.image
+                const weatherData: Weather = {
+                    day: dayOfWeek,
+                    weather: condition || 'Unknown', 
+                    temp: temperature,
+                    wImage : img
+                };
+
+                return <WeatherItem key={index} w={weatherData} />;
+            })
+        }
     </View>
   )
 }

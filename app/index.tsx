@@ -6,6 +6,7 @@ import Content from '../components/home/content';
 import Info from '../components/home/info';
 import { useState,useEffect } from 'react';
 import * as Location from 'expo-location'
+import { useWeatherStore } from '../store/weather-store';
 
 type Location = {
   latitude: number,
@@ -31,11 +32,14 @@ export type Weather = {
 
 
 export default function Index() {
+  const setCurrentWeather = useWeatherStore(state=>state.setCurrentWeather)
+  const setDailyForecast = useWeatherStore(state=>state.setDailyForecast)
   const [location,setLocation] = useState<Location>({latitude: 25.276987,longitude: 55.296249})
   const [weatherInfo,setWeatherInfo] = useState<Weather>()
   const [city,setCity] = useState<string>('Dubai')
 
   useEffect(()=>{
+   
     const getPermission = async() =>{
       const { status } = await Location.requestForegroundPermissionsAsync()
       if(status !== 'granted'){
@@ -50,9 +54,19 @@ export default function Index() {
     const getWeatherInfo = async() =>{
       const weather_api = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weathercode,temperature_2m_max,sunrise,sunset,windspeed_10m_max&timezone=auto&current_weather=true`
       const response = await fetch(weather_api)
-      const res_data = await response.json()
+      const res_data : Weather = await response.json()
       setWeatherInfo(res_data)
-      console.log(res_data)
+      setCurrentWeather({
+        temperature:res_data.current_weather.temperature,
+        weatherCode:res_data.current_weather.weathercode
+      })
+      setDailyForecast({
+        sunrise:res_data.daily.sunrise,
+        sunset:res_data.daily.sunset,
+        temperature_2m_max:res_data.daily.temperature_2m_max,
+        time:res_data.daily.time,
+        weathercode:res_data.daily.weathercode
+      })
     }
 
     const getReverseGeocode = async()=>{
@@ -84,12 +98,8 @@ export default function Index() {
         <View className='px-8'>
             <Header cityname={city}/>
             <InputBox/>
-            {
-              weatherInfo && <Content weatherInfo={weatherInfo} />
-            }
-            {
-              weatherInfo && <Info weatherInfo={weatherInfo}/>
-            }
+              <Content />
+              <Info/>
             <Text className=' text-center text-secondaryDark text-sm my-10'>
               Weather App - THK
             </Text>
