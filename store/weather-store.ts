@@ -11,6 +11,7 @@ type DailyForecast = {
     temperature_2m_max : number[],
     time  :string[],
     weathercode : number[]
+    windspeed_10m_max:number[]
 }
 
 type WeatherType = {
@@ -23,7 +24,8 @@ type WeatherType = {
         sunset  : string[],
         temperature_2m_max : number[],
         time  :string[],
-        weathercode : number[]
+        weathercode : number[],
+        windspeed_10m_max:number[]
       },
       setCurrentWeather: (weather:CurrentWeather) => void,
       setDailyForecast : (forecast:DailyForecast)=> void
@@ -39,7 +41,8 @@ export const useWeatherStore = create<WeatherType>(set => ({
         sunset  : [],
         temperature_2m_max : [],
         time  :[],
-        weathercode : []
+        weathercode : [],
+        windspeed_10m_max:[]
     },
     setCurrentWeather:(weather)=>set({
         current_weather : {
@@ -53,7 +56,8 @@ export const useWeatherStore = create<WeatherType>(set => ({
             sunset : forecast.sunset,
             temperature_2m_max:forecast.temperature_2m_max,
             time : forecast.time,
-            weathercode : forecast.weathercode
+            weathercode : forecast.weathercode,
+            windspeed_10m_max:forecast.windspeed_10m_max
         }
     })
 }))

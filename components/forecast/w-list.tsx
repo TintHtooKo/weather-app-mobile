@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlatList, ImageSourcePropType, Text, View } from 'react-native'
+import { FlatList, ImageSourcePropType, ScrollView, Text, View } from 'react-native'
 import WeatherItem from './w-item'
 import { useWeatherStore } from '../../store/weather-store'
 import { DAYS, getWeatherInfoByCode } from '../../utils'
@@ -15,7 +15,8 @@ export type Weather = {
 const WList = () => {
     const dailyForecast = useWeatherStore(state=>state.daily)
   return (
-    <View className='flex-1'>
+    <ScrollView>
+        <View className='flex-1'>
         {
             dailyForecast.weathercode.map((code,index)=>{
                 const temperature = dailyForecast.temperature_2m_max[index];
@@ -34,6 +35,7 @@ const WList = () => {
             })
         }
     </View>
+    </ScrollView>
   )
 }
 

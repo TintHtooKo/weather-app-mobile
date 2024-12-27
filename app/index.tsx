@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ImageBackground, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Header from '../components/home/header';
 import InputBox from '../components/home/input-box';
 import Content from '../components/home/content';
@@ -7,6 +7,7 @@ import Info from '../components/home/info';
 import { useState,useEffect } from 'react';
 import * as Location from 'expo-location'
 import { useWeatherStore } from '../store/weather-store';
+import { getLocationByCity, getWeatherInfo } from '../utils/weather-api';
 
 type Location = {
   latitude: number,
@@ -49,40 +50,50 @@ export default function Index() {
       const currentLocation = await Location.getCurrentPositionAsync({})
       // console.log(currentLocation)
       setLocation({latitude: currentLocation.coords.latitude,longitude: currentLocation.coords.longitude})
-    }
-
-    const getWeatherInfo = async() =>{
-      const weather_api = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weathercode,temperature_2m_max,sunrise,sunset,windspeed_10m_max&timezone=auto&current_weather=true`
-      const response = await fetch(weather_api)
-      const res_data : Weather = await response.json()
-      setWeatherInfo(res_data)
-      setCurrentWeather({
-        temperature:res_data.current_weather.temperature,
-        weatherCode:res_data.current_weather.weathercode
-      })
-      setDailyForecast({
-        sunrise:res_data.daily.sunrise,
-        sunset:res_data.daily.sunset,
-        temperature_2m_max:res_data.daily.temperature_2m_max,
-        time:res_data.daily.time,
-        weathercode:res_data.daily.weathercode
-      })
-    }
-
-    const getReverseGeocode = async()=>{
-      const reverseGeocodeResponse = await Location.reverseGeocodeAsync({
-        latitude : location.latitude,
-        longitude : location.longitude
-      })
-      setCity(reverseGeocodeResponse[0].city!)
-      // console.log(reverseGeocodeResponse)
-    }
-
+    } 
     getPermission();
-    getWeatherInfo()
-    getReverseGeocode()
     // console.log('weathrerinfo',weatherInfo)
   },[])
+
+  const getWeather = async()=>{
+    const weather = await getWeatherInfo(location.latitude,location.longitude)
+    setCurrentWeather({
+      temperature:weather.current_weather.temperature,
+      weatherCode:weather.current_weather.weathercode
+    })
+    setDailyForecast({
+      sunrise:weather.daily.sunrise,
+      sunset:weather.daily.sunset,
+      temperature_2m_max:weather.daily.temperature_2m_max,
+      time:weather.daily.time,
+      weathercode:weather.daily.weathercode,
+      windspeed_10m_max:weather.daily.windspeed_10m_max
+    })
+  }
+
+  const getReverseGeocode = async()=>{
+    const reverseGeocodeResponse = await Location.reverseGeocodeAsync({
+      latitude : location.latitude,
+      longitude : location.longitude
+    })
+
+    setCity(reverseGeocodeResponse[0].city! || reverseGeocodeResponse[0].country!)
+    // console.log(reverseGeocodeResponse)
+  }
+
+  const searchLocationByCity = async(city:string)=>{
+    try {
+      const {latitude,longitude} = await getLocationByCity(city)
+      setLocation({latitude,longitude})
+    } catch (error) {
+      Alert.alert(error as string)
+    }
+  }
+
+  useEffect(()=>{
+    getWeather()
+    getReverseGeocode()
+  },[location])
 
   return (
     // SafeAreaView ka ios pal effect phit tal
@@ -97,7 +108,7 @@ export default function Index() {
         >
         <View className='px-8'>
             <Header cityname={city}/>
-            <InputBox/>
+            <InputBox searchLocationByCity={searchLocationByCity}/>
               <Content />
               <Info/>
             <Text className=' text-center text-secondaryDark text-sm my-10'>

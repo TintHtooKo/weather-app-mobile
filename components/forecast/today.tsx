@@ -10,7 +10,7 @@ const Today = () => {
   const [weatherDetails,setWeatherDetails] = useState<WeatherDetail>()
     useEffect(()=>{
       setWeatherDetails(getWeatherInfoByCode(weatherCode))
-    },[weatherDetails])
+    },[weatherCode])
   return (
     <View className=' flex-row mb-2 justify-between'>
       <Image source={weatherDetails?.image} className=' w-56 h-52'/>

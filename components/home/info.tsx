@@ -5,9 +5,11 @@ import { getTimeOnly } from '../../utils';
 import { useWeatherStore } from '../../store/weather-store';
 
 
+
 const Info = () => {
   const sunrise = useWeatherStore((state) => state.daily?.sunrise?.[0]) ;
   const sunset = useWeatherStore((state) => state.daily?.sunset?.[0]) ;
+  const windspeed = useWeatherStore((state) => state.daily?.windspeed_10m_max?.[0]) ;
   return (
     <View className=' flex-row items-center justify-center my-2 gap-3 mx-auto'>
       <View className=' flex-1 items-center shadow bg-white rounded-3xl p-4'>
@@ -17,6 +19,16 @@ const Info = () => {
       </Text>
       <Text className=' text-lg text-secondaryDark font-bold'>
         Sunrise
+      </Text>
+      </View>
+
+      <View className=' flex-1 items-center shadow bg-white rounded-3xl p-4'>
+      <Feather name="wind" size={24} color="#f7b92a" />
+      <Text className=' text-purpleDark font-bold text-lg'>
+        {windspeed}km/h
+      </Text>
+      <Text className=' text-lg text-secondaryDark font-bold'>
+        Wind 
       </Text>
       </View>
 

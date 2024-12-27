@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, ImageSourcePropType, Text, View } from 'react-native'
 import { Weather } from '../../app'
 import { getWeatherInfoByCode } from '../../utils'
 import { useWeatherStore } from '../../store/weather-store'
@@ -7,7 +7,7 @@ import { useWeatherStore } from '../../store/weather-store'
 export type WeatherDetail = {
   codes : number[],
   label : string,
-  image : string
+  image : ImageSourcePropType
 }
 
 const Content = () => {
@@ -15,7 +15,7 @@ const Content = () => {
   const [weatherDetails,setWeatherDetails] = useState<WeatherDetail>()
   useEffect(()=>{
     setWeatherDetails(getWeatherInfoByCode(current_weather.weathercode))
-  },[weatherDetails])
+  },[current_weather.weathercode])
   return (
     <View className=' items-center justify-center mb-6'>
       <Image 
